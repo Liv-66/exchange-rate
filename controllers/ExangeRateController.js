@@ -1,12 +1,14 @@
 const axios = require('axios');
 const xml2js = require('xml2js');
 const async = require('async');
+const alert = require('alert');
 
 parser = new xml2js.Parser();
 
 module.exports = {
   getCurrencyData: (req, res) => {
     try {
+      let param = {};
       let rs = {};
       async.waterfall(
         [
@@ -61,27 +63,47 @@ module.exports = {
         ],
         function (error, result) {
           if (error) {
-            res.send(error.error_msg);
+            return res.send(error.error_msg);
           } else {
-            res.send(
-              '<div>Exange Rate</div>' +
-                '<div>Udate time: ' +
-                result.update_time +
-                '</div>' +
-                '<div>Description: ' +
-                result.description +
-                '</div>' +
-                '<div>Support currencies: ' +
-                result.currency_ar.join(', ') +
-                '</div>'
-            );
+            param.update_time = result.update_time;
+            param.description = result.description;
+            param.currency_ar = result.currency_ar;
+            param.currency = result.currency_ar.join(', ');
+            return res.render('index', { param, layout: false });
+            // res.send(
+            //   '<div>Exange Rate</div>' +
+            //     '<div>Udate time: ' +
+            //     result.update_time +
+            //     '</div>' +
+            //     '<div>Description: ' +
+            //     result.description +
+            //     '</div>' +
+            //     '<div>Support currencies: ' +
+            //     result.currency_ar.join(', ') +
+            //     '</div>'
+            // );
           }
-          console.log('error: ', error);
-          console.log('result: ', result);
         }
       );
     } catch (e) {
-      res.send('getCurrencyData catch in ' + e.toString());
+      return res.send('getCurrencyData catch in ' + e.toString());
+    }
+  },
+  convertCurrency: (req, res) => {
+    try {
+      error_msg = '';
+      const { amount, currency, submit } = req.body;
+      if (submit != 'CONVERT') {
+        error_msg = 'Please visit Exange Rate page.';
+        return res.send(error_msg);
+      } else if (amount == '' || currency == '') {
+        error_msg = 'Please input amount and currency.';
+        return alert(error_msg);
+      } else {
+        console.log('ok');
+      }
+    } catch (e) {
+      return res.send('convertCurrency catch in ' + e.toString());
     }
   },
 };
