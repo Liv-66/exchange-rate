@@ -7,7 +7,6 @@ parser = new xml2js.Parser();
 module.exports = {
   getCurrencyData: (req, res) => {
     try {
-      let param = {};
       let rs = {};
       async.waterfall(
         [
@@ -64,10 +63,18 @@ module.exports = {
           if (error) {
             res.send(error.error_msg);
           } else {
-            param.update_time = result.update_time;
-            param.currency_ar = result.currency_ar;
-            param.description = result.description;
-            res.send('controller finish ' + JSON.stringify(param));
+            res.send(
+              '<div>Exange Rate</div>' +
+                '<div>Udate time: ' +
+                result.update_time +
+                '</div>' +
+                '<div>Description: ' +
+                result.description +
+                '</div>' +
+                '<div>Support currencies: ' +
+                result.currency_ar.join(', ') +
+                '</div>'
+            );
           }
           console.log('error: ', error);
           console.log('result: ', result);
