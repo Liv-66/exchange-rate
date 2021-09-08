@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const ExangeRateController = require('./controllers/ExangeRateController.js');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 app.engine(
   'hbs',
