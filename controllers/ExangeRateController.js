@@ -41,6 +41,8 @@ module.exports = {
                 rs.inverse_rate_ar = [];
                 rs.currency_target = [];
 
+                rs.exchange_rate_obj = {};
+                rs.inverse_rate_obj = {};
                 // rs.updated_time = rst.channel.lastBuildDate;
                 // rs.description = rst.channel.description;
 
@@ -73,6 +75,10 @@ module.exports = {
                       inverse_amount +
                       ' TWD'
                   );
+                  rs.exchange_rate_obj[el.targetCurrency[0]] =
+                    Math.round(parseFloat(el.exchangeRate[0]) * 100) / 100;
+                  rs.inverse_rate_obj[el.targetCurrency[0]] =
+                    Math.round(parseFloat(el.inverseRate[0]) * 100) / 100;
                 });
                 next(null, rs);
               }
@@ -85,10 +91,20 @@ module.exports = {
           } else {
             // param.updated_time = result.updated_time;
             // param.description = result.description;
+            // param.exchange_rate_ar = result.exchange_rate_ar;
+            // param.inverse_rate_ar = result.inverse_rate_ar;
             param.currency_base = result.currency_base;
             param.currency_target = result.currency_target;
-            param.exchange_rate_ar = result.exchange_rate_ar;
-            param.inverse_rate_ar = result.inverse_rate_ar;
+            param.inverse_rate_str = JSON.stringify(result.inverse_rate_obj);
+            param.exchange_rate_str = JSON.stringify(result.exchange_rate_obj);
+
+            param.init = {};
+            param.init.exc_USD = result.exchange_rate_obj.USD;
+            param.init.inv_USD = result.inverse_rate_obj.USD;
+            param.init.con_USD = Math.round(result.inverse_rate_obj.USD);
+
+            param.exchange_rate_obj = result.exchange_rate_obj;
+            param.inverse_rate_obj = result.inverse_rate_obj;
             // param.currency = result.currency_ar.join(', ');
             return res.render('index', { param });
           }
