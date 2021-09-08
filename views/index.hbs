@@ -1,15 +1,18 @@
 <div class="d-inline-block" style="background-color: #eee; width: 40%">
 
-  <form action="/" method="post" style="background-color: #fff" class="pt-4 pb-4 pl-5 pr-5 position-relative">
+  <form action="/" method="post" style="background-color: #fff" class="pt-4 pb-4 pl-5 pr-5 position-relative"
+    onkeydown="return event.key != 'Enter';">
     <label for="amount" class="d-block">Amount</label>
-    <input type="text" name="amount" id="amount" class="form-control d-block" style="width: 100%;" value="1.00">
+    <input type="text" name="amount" id="amount" class="form-control d-block" style="width: 100%;" value="100"
+      onKeyUp="value=value.replace(/[^\d\.]/g,'')">
     <label for="from" class="d-block mt-4">From</label>
     <select name="currency" id="from" style="width: 100%;" class="form-control">
       {{#each param.currency_target}}
       <option>{{this}}</option>
       {{/each}}
     </select>
-    <div id="switch" class="btn position-absolute" style="left: 75%; top:43.5%; color: #808080; border-color: #CDCDCD">
+    <div id="switch" class="btn position-absolute"
+      style="left: 75%; top: 12.3em; color: #808080; border-color: #CDCDCD">
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up"
         viewBox="0 0 16 16">
         <path fill-rule="evenodd"
@@ -21,10 +24,14 @@
       <option>{{param.currency_base}}</option>
     </select>
 
-    <input type="submit" name="submit" class="btn btn-info mt-5" style="width: 100%;" value="Convert">
+    {{!-- <input type="submit" name="submit" class="btn btn-info mt-5" style="width: 100%;" value="Convert"> --}}
 
-    <div styl="display: block;" class="pt-4">
-      About <span style="font-size:1.5rem">{{param.init.con_USD}}</span> TWD
+    <div style="display: block;" class="pt-4">
+      About <span id="convert_amount" style="font-size:1.5rem">{{param.init.con_USD}}</span> <span
+        id="convert_currency">TWD</span>
+    </div>
+    <div style="display: block; color: #777" id="convert_description">
+      1 USD = {{param.init.inv_USD}} TWD
     </div>
   </form>
 
@@ -37,7 +44,7 @@
         USD to TWD
       </div>
       <ul class="list-group list-group-flush" id="exchange_list">
-        <li class="list-group-item">1 USD = {{param.init.exc_USD}} TWD</li>
+        <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
       </ul>
     </div>
     <div class="card" style="width: 18rem;">
@@ -45,35 +52,106 @@
         TWD to USD
       </div>
       <ul class="list-group list-group-flush" id="inverse_list">
-        <li class="list-group-item">1 TWD = {{param.init.inv_USD}} USD</li>
+        <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
       </ul>
     </div>
   </div>
 </div>
-<!--
-<div>Udated time: {{param.update_time}}</div>
-<div>Description: {{param.description}}</div>
-<div>Support currencies: <span style="color: gray">{{param.currency}}</span></div>
--->
+
 <script>
   const inverse = {{{ param.inverse_rate_str }}};
   const exchange = {{{ param.exchange_rate_str }}};
 
+  // input輸入即時轉換匯率
+  document.getElementById('amount').addEventListener('keyup', function () {
+    convert();
+  })
+
+  // 當前幣別轉換方向對換，同時更新輸出值與dashboard
   document.getElementById('switch').addEventListener('click', function () {
-    let from_val = document.getElementById('from').innerHTML;
-    let to_val = document.getElementById('to').innerHTML;
-
-    document.getElementById('from').innerHTML = to_val;
-    document.getElementById('to').innerHTML = from_val;
-  })
-  document.getElementById('from').addEventListener('change', function () {
-    let from_val = document.getElementById('from').value.split(' - ')[0];
+    let from_val = document.getElementById('from').value;
     let to_val = document.getElementById('to').value;
+    let from_option = document.getElementById('from').innerHTML;
+    let to_option = document.getElementById('to').innerHTML;
 
-    document.getElementById('exchange_list').innerHTML = '<li class="list-group-item">1 ' + from_val + ' = ' + exchange[from_val] + 'TWD</li>';
-    document.getElementById('inverse_list').innerHTML = '<li class="list-group-item">1 TWD = ' + inverse[from_val] + ' ' + from_val + '</li>';
+    document.getElementById('from').innerHTML = to_option;
+    document.getElementById('from').value = to_val;
+    document.getElementById('to').innerHTML = from_option;
+    document.getElementById('to').value = from_val;
 
-    document.getElementById('exchange_title').innerHTML = from_val + ' to TWD';
-    document.getElementById('inverse_title').innerHTML = 'TWD to ' + from_val;
+    dashboard();
+    convert();
   })
+
+  // 幣別from值改變，同時更新輸出值與dashboard
+  document.getElementById('from').addEventListener('change', function () {
+    dashboard();
+    convert();
+  })
+
+  // 幣別to值改變，同時更新輸出值與dashboard
+  document.getElementById('to').addEventListener('change', function () {
+    dashboard();
+    convert();
+  })
+
+  function convert() {
+    let amount = document.getElementById('amount').value;
+    // 確認input為數字且只有一個小數點
+    if (isNaN(amount)) {
+      let new_val = amount.split('.');
+      amount = new_val[0] + '.' + new_val[1];
+      document.getElementById('amount').value = amount;
+    }
+
+    let from_val = document.getElementById('from').value.split(' - ')[0];
+    let to_val = document.getElementById('to').value.split(' - ')[0];
+    let type = to_val == 'TWD' ? 'inverse' : 'exchange';
+
+    // 根據TWD與目標幣別的轉換方向，提供對應數值
+    if (type == 'inverse') {
+      // target to TWD
+      let convert_amount = Math.round(amount * inverse[from_val]);
+      // 轉換後金額
+      document.getElementById('convert_amount').innerHTML = convert_amount;
+      document.getElementById('convert_currency').innerHTML = to_val;
+      // 1 dollar description
+      document.getElementById('convert_description').innerHTML = '1 ' + from_val + ' = ' + inverse[from_val] + ' TWD';
+    }
+    else {
+      // TWD to target
+      let convert_amount = Math.round(amount * exchange[to_val]);
+      // 轉換後金額
+      document.getElementById('convert_amount').innerHTML = convert_amount;
+      document.getElementById('convert_currency').innerHTML = to_val;
+      // 1 dollar description
+      document.getElementById('convert_description').innerHTML = '1 TWD = ' + exchange[to_val] + ' ' + to_val;
+    }
+  }
+
+  function dashboard() {
+    let from_val = document.getElementById('from').value.split(' - ')[0];
+    let to_val = document.getElementById('to').value.split(' - ')[0];
+    let type = to_val == 'TWD' ? 'inverse' : 'exchange';
+    console.log(type)
+    // 根據TWD與目標幣別的轉換方向，顯示對應數值與標題
+    if (type == 'inverse') {
+      // target to TWD 
+      // details
+      document.getElementById('exchange_list').innerHTML = '<li class="list-group-item">1 ' + from_val + ' = ' + inverse[from_val] + ' TWD</li>';
+      document.getElementById('inverse_list').innerHTML = '<li class="list-group-item">1 TWD = ' + exchange[from_val] + ' ' + from_val + '</li>';
+      // title
+      document.getElementById('exchange_title').innerHTML = from_val + ' to TWD';
+      document.getElementById('inverse_title').innerHTML = 'TWD to ' + from_val;
+    }
+    else {
+      // TWD to target
+      // details
+      document.getElementById('inverse_list').innerHTML = '<li class="list-group-item">1 ' + to_val + ' = ' + inverse[to_val] + ' TWD</li>';
+      document.getElementById('exchange_list').innerHTML = '<li class="list-group-item">1 TWD = ' + exchange[to_val] + ' ' + to_val + '</li>';
+      // title
+      document.getElementById('inverse_title').innerHTML = to_val + ' to TWD';
+      document.getElementById('exchange_title').innerHTML = 'TWD to ' + to_val;
+    }
+  }
 </script>

@@ -23,7 +23,7 @@ app.use(
 );
 
 app.get('/', ExangeRateController.getCurrencyData);
-app.post('/', ExangeRateController.convertCurrency);
+// app.post('/', ExangeRateController.convertCurrency);
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
