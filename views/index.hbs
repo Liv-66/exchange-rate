@@ -1,28 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
+<div class="d-inline-block" style="background-color: #eee; width: 40%">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Exchange Rate</title>
-</head>
-
-<body>
-  <h1>Exange Rate</h1>
-  <div>Udate time: {{param.update_time}}</div>
-  <div>Description: {{param.description}}</div>
-
-  <form action="/" method="post" style="margin: 30px 0;">
-    <input type="text" name="amount" placeholder="amount...">
-    <select name="currency">
-      {{#each param.currency_ar}}
+  <form action="/" method="post" style="background-color: #fff" class="pt-4 pb-4 pl-5 pr-5">
+    <label for="amount" class="d-block">Amount</label>
+    <input type="text" name="amount" id="amount" class="form-control d-block" style="width: 100%;" value="1.00">
+    <label for="from" class="d-block mt-4">From</label>
+    <select name="currency" id="from" style="width: 100%;" class="form-control">
+      {{#each param.currency_target}}
       <option>{{this}}</option>
       {{/each}}
     </select>
-    <input type="submit" name="submit" value="CONVERT">
+
+    <label for="to" class="d-block mt-4">To</label>
+    <select name="currency" id="to" style="width: 100%;" class="form-control">
+      <option>{{param.currency_base}}</option>
+    </select>
+
+    <input type="submit" name="submit" class="btn btn-info mt-5" style="width: 100%;" value="Convert">
+
+    <div styl="display: block;" class="pt-4">
+      About <span style="font-size:1.5rem">30</span> TWD
+    </div>
   </form>
 
-  <div>Support currencies: <span style="color: gray">{{param.currency}}</span></div>
-</body>
+</div>
 
-</html>
+<div class="d-inline-block float-right" style="background-color: #eee; width: 55%">
+  <div class="card-deck p-3">
+    <div class="card" style="width: 18rem;">
+      <div class="card-header">
+        Featured
+      </div>
+      <ul class="list-group list-group-flush">
+        {{#each param.inverse_rate_ar}}
+        <li class="list-group-item">{{this}}</li>
+        {{/each}}
+      </ul>
+    </div>
+    <div class="card" style="width: 18rem;">
+      <div class="card-header">
+        Featured
+      </div>
+      <ul class="list-group list-group-flush">
+        {{#each param.exchange_rate_ar}}
+        <li class="list-group-item">{{this}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  </div>
+</div>
+<!--
+<div>Udated time: {{param.update_time}}</div>
+<div>Description: {{param.description}}</div>
+<div>Support currencies: <span style="color: gray">{{param.currency}}</span></div>
+-->
+<script>
+  console.log(' script ')
+</script>
