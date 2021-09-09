@@ -33,8 +33,19 @@ module.exports = {
                 next(rs);
               } else {
                 rs.currency_target = [];
+                rs.currency_target_popular = [];
                 rs.exchange_rate_obj = {};
                 rs.inverse_rate_obj = {};
+                const popular_currency = [
+                  'EUR',
+                  'USD',
+                  'GBP',
+                  'JPY',
+                  'HKD',
+                  'KRW',
+                ];
+
+                // 匯率更新時間
                 rs.updated_time = moment(rst.channel.lastBuildDate[0]).format(
                   'YYYY-MM-DD hh:mm:ss'
                 );
@@ -46,9 +57,15 @@ module.exports = {
                 // loop target currencies
                 rst.channel.item.forEach((el) => {
                   // 貨幣選單內容
-                  rs.currency_target.push(
-                    el.targetCurrency[0] + ' - ' + el.targetName[0]
-                  );
+                  if (popular_currency.indexOf(el.targetCurrency[0]) != -1) {
+                    rs.currency_target_popular.push(
+                      el.targetCurrency[0] + ' - ' + el.targetName[0]
+                    );
+                  } else {
+                    rs.currency_target.push(
+                      el.targetCurrency[0] + ' - ' + el.targetName[0]
+                    );
+                  }
                   // Dashboard內容
                   rs.exchange_rate_obj[el.targetCurrency[0]] =
                     Math.round(parseFloat(el.exchangeRate[0]) * 100000) /
@@ -56,6 +73,9 @@ module.exports = {
                   rs.inverse_rate_obj[el.targetCurrency[0]] =
                     Math.round(parseFloat(el.inverseRate[0]) * 100000) / 100000;
                 });
+
+                rs.currency_target_popular.sort();
+                rs.currency_target.sort();
                 next(null, rs);
               }
             });
@@ -68,13 +88,42 @@ module.exports = {
             param.updated_time = result.updated_time;
             param.currency_base = result.currency_base;
             param.currency_target = result.currency_target;
+            param.currency_target_popular = result.currency_target_popular;
             param.inverse_rate_str = JSON.stringify(result.inverse_rate_obj);
             param.exchange_rate_str = JSON.stringify(result.exchange_rate_obj);
 
-            // 頁面初始值 target => USD
+            // 頁面初始值 target => EUR
             param.init = {};
-            param.init.exc_USD = result.exchange_rate_obj.USD;
-            param.init.inv_USD = result.inverse_rate_obj.USD;
+            let init_exc = result.exchange_rate_obj.EUR;
+            let init_inv = result.inverse_rate_obj.EUR;
+
+            param.init.exc_EUR_1 = module.exports.getInitData(init_exc, 1);
+            param.init.exc_EUR_10 = module.exports.getInitData(init_exc, 10);
+            param.init.exc_EUR_50 = module.exports.getInitData(init_exc, 50);
+            param.init.exc_EUR_200 = module.exports.getInitData(init_exc, 200);
+            param.init.exc_EUR_500 = module.exports.getInitData(init_exc, 500);
+            param.init.exc_EUR_1000 = module.exports.getInitData(
+              init_exc,
+              1000
+            );
+            param.init.exc_EUR_5000 = module.exports.getInitData(
+              init_exc,
+              5000
+            );
+
+            param.init.inv_EUR_1 = module.exports.getInitData(init_inv, 1);
+            param.init.inv_EUR_10 = module.exports.getInitData(init_inv, 10);
+            param.init.inv_EUR_50 = module.exports.getInitData(init_inv, 50);
+            param.init.inv_EUR_200 = module.exports.getInitData(init_inv, 200);
+            param.init.inv_EUR_500 = module.exports.getInitData(init_inv, 500);
+            param.init.inv_EUR_1000 = module.exports.getInitData(
+              init_inv,
+              1000
+            );
+            param.init.inv_EUR_5000 = module.exports.getInitData(
+              init_inv,
+              5000
+            );
 
             return res.render('index', { param });
           }
@@ -123,5 +172,15 @@ module.exports = {
         error_msg = e.message;
         callback(error_msg);
       });
+  },
+  getInitData: (data, times) => {
+    let result = (Math.round(data * times * 100) / 100).toLocaleString(
+      'en-US',
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      }
+    );
+    return result;
   },
 };

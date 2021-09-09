@@ -8,9 +8,16 @@
         onKeyUp="value=value.replace(/[^\d\.]/g,'')" maxlength="19">
       <label for="from" class="d-block mt-4">From</label>
       <select name="currency_from" id="from" style="width: 100%;" class="form-control">
-        {{#each param.currency_target}}
-        <option>{{this}}</option>
-        {{/each}}
+        <optgroup>
+          {{#each param.currency_target_popular}}
+          <option>{{this}}</option>
+          {{/each}}
+        </optgroup>
+        <optgroup label="------------------------------------">
+          {{#each param.currency_target}}
+          <option>{{this}}</option>
+          {{/each}}
+        </optgroup>
       </select>
       <div id="switch" class="btn position-absolute"
         style="right: 1.6em; top: 12.3em; color: #808080; border-color: #CDCDCD">
@@ -38,35 +45,104 @@
 
   </div>
 
-  <div class="d-inline-block float-right shadow p-3 mb-5 bg-white rounded" style="width: 55%">
+  <div class="d-inline-block float-right shadow bg-white rounded" style="width: 55%; padding: 1.3em">
     <div class="card-deck p-3">
       <div class="card" style="width: 18rem; ">
-        <div class="card-header font-weight-bold" style="background-color: #28a2b814;" id="exchange_title">
-          USD to TWD
+        <div class="card-header font-weight-bold text-center" style="background-color: #28a2b814;" id="exchange_title">
+          EUR to TWD
         </div>
-        <ul class="list-group list-group-flush" id="exchange_list">
-          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-
+        <ul class="list-group list-group-flush" id="inverse_list">
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">1</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="inv_1">
+              {{param.init.inv_EUR_1}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">10</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="inv_10">
+              {{param.init.inv_EUR_10}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">50</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="inv_50">
+              {{param.init.inv_EUR_50}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">200</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="inv_200">
+              {{param.init.inv_EUR_200}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">500</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="inv_500">
+              {{param.init.inv_EUR_500}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">1000</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="inv_1000">
+              {{param.init.inv_EUR_1000}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">5000</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="inv_5000">
+              {{param.init.inv_EUR_5000}}</div>
+          </li>
         </ul>
       </div>
       <div class="card" style="width: 18rem;">
-        <div class="card-header font-weight-bold" style="background-color: #28a2b814;" id="inverse_title">
-          TWD to USD
+        <div class="card-header font-weight-bold text-center" style="background-color: #28a2b814;" id="inverse_title">
+          TWD to EUR
         </div>
-        <ul class="list-group list-group-flush" id="inverse_list">
-          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
-          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
-          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
-          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
-          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
-          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
-          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+        <ul class="list-group list-group-flush" id="exchange_list">
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">1</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="exc_1">
+              {{param.init.exc_EUR_1}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">10</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="exc_10">
+              {{param.init.exc_EUR_10}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">50</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="exc_50">
+              {{param.init.exc_EUR_50}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">200</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="exc_200">
+              {{param.init.exc_EUR_200}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">500</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="exc_500">
+              {{param.init.exc_EUR_500}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">1000</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="exc_1000">
+              {{param.init.exc_EUR_1000}}</div>
+          </li>
+          <li class="list-group-item">
+            <div style="display: inline-block; width: 45%; text-align: right; padding-right:.5em">5000</div><span
+              style="color: #eee;"> | </span>
+            <div style="display: inline-block; width: 45%; text-align: right;" id="exc_5000">
+              {{param.init.exc_EUR_5000}}</div>
+          </li>
         </ul>
       </div>
     </div>
@@ -181,8 +257,20 @@
     if (type == 'inverse') {
       // target to TWD 
       // details
-      document.getElementById('exchange_list').innerHTML = '<li class="list-group-item">1 ' + from_val + ' = ' + inverse[from_val] + ' TWD</li>';
-      document.getElementById('inverse_list').innerHTML = '<li class="list-group-item">1 TWD = ' + exchange[from_val] + ' ' + from_val + '</li>';
+      document.getElementById('exc_1').innerHTML = formatNumber(exchange[from_val], 1);
+      document.getElementById('exc_10').innerHTML = formatNumber(exchange[from_val], 10);
+      document.getElementById('exc_50').innerHTML = formatNumber(exchange[from_val], 50);
+      document.getElementById('exc_200').innerHTML = formatNumber(exchange[from_val], 200);
+      document.getElementById('exc_500').innerHTML = formatNumber(exchange[from_val], 500);
+      document.getElementById('exc_1000').innerHTML = formatNumber(exchange[from_val], 1000);
+      document.getElementById('exc_5000').innerHTML = formatNumber(exchange[from_val], 5000);
+      document.getElementById('inv_1').innerHTML = formatNumber(inverse[from_val], 1);
+      document.getElementById('inv_10').innerHTML = formatNumber(inverse[from_val], 10);
+      document.getElementById('inv_50').innerHTML = formatNumber(inverse[from_val], 50);
+      document.getElementById('inv_200').innerHTML = formatNumber(inverse[from_val], 200);
+      document.getElementById('inv_500').innerHTML = formatNumber(inverse[from_val], 500);
+      document.getElementById('inv_1000').innerHTML = formatNumber(inverse[from_val], 1000);
+      document.getElementById('inv_5000').innerHTML = formatNumber(inverse[from_val], 5000);
       // title
       document.getElementById('exchange_title').innerHTML = from_val + ' to TWD';
       document.getElementById('inverse_title').innerHTML = 'TWD to ' + from_val;
@@ -190,11 +278,27 @@
     else {
       // TWD to target
       // details
-      document.getElementById('inverse_list').innerHTML = '<li class="list-group-item">1 ' + to_val + ' = ' + inverse[to_val] + ' TWD</li>';
-      document.getElementById('exchange_list').innerHTML = '<li class="list-group-item">1 TWD = ' + exchange[to_val] + ' ' + to_val + '</li>';
+      document.getElementById('inv_1').innerHTML = formatNumber(exchange[to_val], 1);
+      document.getElementById('inv_10').innerHTML = formatNumber(exchange[to_val], 10);
+      document.getElementById('inv_50').innerHTML = formatNumber(exchange[to_val], 50);
+      document.getElementById('inv_200').innerHTML = formatNumber(exchange[to_val], 200);
+      document.getElementById('inv_500').innerHTML = formatNumber(exchange[to_val], 500);
+      document.getElementById('inv_1000').innerHTML = formatNumber(exchange[to_val], 1000);
+      document.getElementById('inv_5000').innerHTML = formatNumber(exchange[to_val], 5000);
+      document.getElementById('exc_1').innerHTML = formatNumber(inverse[to_val], 1);
+      document.getElementById('exc_10').innerHTML = formatNumber(inverse[to_val], 10);
+      document.getElementById('exc_50').innerHTML = formatNumber(inverse[to_val], 50);
+      document.getElementById('exc_200').innerHTML = formatNumber(inverse[to_val], 200);
+      document.getElementById('exc_500').innerHTML = formatNumber(inverse[to_val], 500);
+      document.getElementById('exc_1000').innerHTML = formatNumber(inverse[to_val], 1000);
+      document.getElementById('exc_5000').innerHTML = formatNumber(inverse[to_val], 5000);
       // title
       document.getElementById('inverse_title').innerHTML = to_val + ' to TWD';
       document.getElementById('exchange_title').innerHTML = 'TWD to ' + to_val;
     }
+  }
+
+  function formatNumber(number, times) {
+    return Number(number * times).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 </script>
