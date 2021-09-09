@@ -2,7 +2,7 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 
-const ExangeRateController = require('./controllers/ExangeRateController.js');
+const ExchangeRateController = require('./controllers/ExchangeRateController.js');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -23,9 +23,9 @@ app.use(
 );
 app.use(express.static(__dirname + '/public'));
 
-app.get('/', ExangeRateController.getCurrencyData);
-app.post('/convert', ExangeRateController.convertCurrency);
-app.post('/convert/test', ExangeRateController.convertTest);
+app.get('/', ExchangeRateController.getCurrencyData);
+app.post('/convert', ExchangeRateController.convertCurrency);
+app.post('/convert/test', ExchangeRateController.convertTest);
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
