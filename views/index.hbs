@@ -1,13 +1,13 @@
 <div style="max-width: 1024px; margin: 0 auto;">
   <div class="d-inline-block shadow p-3 mb-5 bg-white rounded" style="width: 40%">
 
-    <form action="/" method="post" style="background-color: #fff" class="p-4 position-relative"
+    <form action="/convert" method="post" id="form" style="background-color: #fff" class="p-4 position-relative"
       onkeydown="return event.key != 'Enter';">
       <label for="amount" class="d-block">Amount</label>
       <input type="text" name="amount" id="amount" class="form-control d-block" style="width: 100%;" value="100"
-        onKeyUp="value=value.replace(/[^\d\.]/g,'')">
+        onKeyUp="value=value.replace(/[^\d\.]/g,'')" maxlength="19">
       <label for="from" class="d-block mt-4">From</label>
-      <select name="currency" id="from" style="width: 100%;" class="form-control">
+      <select name="currency_from" id="from" style="width: 100%;" class="form-control">
         {{#each param.currency_target}}
         <option>{{this}}</option>
         {{/each}}
@@ -21,18 +21,18 @@
         </svg>
       </div>
       <label for="to" class="d-block mt-4">To</label>
-      <select name="currency" id="to" style="width: 100%;" class="form-control">
+      <select name="currency_to" id="to" style="width: 100%;" class="form-control">
         <option>{{param.currency_base}}</option>
       </select>
 
-      <input type="submit" name="submit" class="btn btn-info mt-5" style="width: 100%;" value="Convert">
+      <input type="submit" name="submit" id="submit" class="btn btn-info mt-5" style="width: 100%;" value="Convert">
 
-      <div style="display: none;" class="pt-4">
-        About <span id="convert_amount" style="font-size:1.5rem; color: #28a2b8">{{param.init.con_USD}}</span> <span
+      <div style="display: none;" class="pt-4" id="convert_amount_box">
+        About <span id="convert_amount" style="font-size:1.5rem; color: #28a2b8"></span> <span
           id="convert_currency">TWD</span>
       </div>
       <div style="display: none; color: #777; font-size: .9em" id="convert_description">
-        1 USD = {{param.init.inv_USD}} TWD
+        {{!-- 1 USD = {{param.init.inv_USD}} TWD --}}
       </div>
     </form>
 
@@ -78,6 +78,33 @@
 <script>
   const inverse = {{{ param.inverse_rate_str }}};
   const exchange = {{{ param.exchange_rate_str }}};
+
+  document.getElementById('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    let dataObj = {
+      amount: $('#amount').val(),
+      currency_from: $('#from').val(),
+      currency_to: $('#to').val(),
+      submit: $('#submit').val()
+    };
+
+    $.ajax({
+      url: '/convert',
+      type: 'POST',
+      data: dataObj,
+      error: (error) => { console.log('error: ', error) },
+      success: (res) => {
+        if (res === 200) {
+          $('#submit').hide();
+          $('#convert_amount_box').show();
+          $('#convert_description').show();
+
+          dashboard();
+          convert();
+        }
+      }
+    })
+  })
 
   // input輸入即時轉換匯率
   document.getElementById('amount').addEventListener('keyup', function () {
@@ -130,19 +157,19 @@
       // target to TWD
       let convert_amount = Math.round(amount * inverse[from_val]);
       // 轉換後金額
-      document.getElementById('convert_amount').innerHTML = convert_amount;
+      document.getElementById('convert_amount').innerHTML = convert_amount.toLocaleString();
       document.getElementById('convert_currency').innerHTML = to_val;
       // 1 dollar description
-      document.getElementById('convert_description').innerHTML = '1 ' + from_val + ' = ' + inverse[from_val] + ' TWD';
+      document.getElementById('convert_description').innerHTML = Number(amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 18, style: 'currency', currency: from_val }) + ' = ' + (amount * inverse[from_val]).toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4, style: 'currency', currency: 'TWD' });
     }
     else {
       // TWD to target
       let convert_amount = Math.round(amount * exchange[to_val]);
       // 轉換後金額
-      document.getElementById('convert_amount').innerHTML = convert_amount;
+      document.getElementById('convert_amount').innerHTML = convert_amount.toLocaleString();
       document.getElementById('convert_currency').innerHTML = to_val;
       // 1 dollar description
-      document.getElementById('convert_description').innerHTML = '1 TWD = ' + exchange[to_val] + ' ' + to_val;
+      document.getElementById('convert_description').innerHTML = Number(amount).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 18, style: 'currency', currency: 'TWD' }) + ' = ' + (amount * exchange[to_val]).toLocaleString('en-US', { minimumFractionDigits: 4, maximumFractionDigits: 4, style: 'currency', currency: to_val });
     }
   }
 
@@ -150,7 +177,6 @@
     let from_val = document.getElementById('from').value.split(' - ')[0];
     let to_val = document.getElementById('to').value.split(' - ')[0];
     let type = to_val == 'TWD' ? 'inverse' : 'exchange';
-    console.log(type)
     // 根據TWD與目標幣別的轉換方向，顯示對應數值與標題
     if (type == 'inverse') {
       // target to TWD 

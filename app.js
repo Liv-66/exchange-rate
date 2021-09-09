@@ -24,7 +24,7 @@ app.use(
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', ExangeRateController.getCurrencyData);
-// app.post('/', ExangeRateController.convertCurrency);
+app.post('/convert', ExangeRateController.convertCurrency);
 
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);

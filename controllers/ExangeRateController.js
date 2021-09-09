@@ -15,21 +15,15 @@ module.exports = {
           // 取得匯率資訊
           (next) => {
             let rs = {};
-            axios
-              .get('http://www.floatrates.com/daily/twd.xml')
-              .then((data) => {
-                if (data.status === 200) {
-                  rs.data = data.data;
-                } else {
-                  rs.error_msg =
-                    'Get currency error, status code: ' + data.status;
-                }
-                next(null, rs);
-              })
-              .catch((e) => {
-                rs.error_msg = e.message;
+            module.exports.getExchangeRate((err, rst) => {
+              if (err) {
+                rs.error_msg = err;
                 next(rs);
-              });
+              } else {
+                rs.data = rst;
+                next(null, rs);
+              }
+            });
           },
           // 整理匯率資料，組建可支援幣別
           (rs, next) => {
@@ -41,7 +35,9 @@ module.exports = {
                 rs.currency_target = [];
                 rs.exchange_rate_obj = {};
                 rs.inverse_rate_obj = {};
-                rs.updated_time = moment(rst.channel.lastBuildDate[0]).format('YYYY-MM-DD hh:mm:ss');
+                rs.updated_time = moment(rst.channel.lastBuildDate[0]).format(
+                  'YYYY-MM-DD hh:mm:ss'
+                );
 
                 // 當前貨幣 - TWD
                 rs.currency_base =
@@ -55,9 +51,10 @@ module.exports = {
                   );
                   // Dashboard內容
                   rs.exchange_rate_obj[el.targetCurrency[0]] =
-                    Math.round(parseFloat(el.exchangeRate[0]) * 100) / 100;
+                    Math.round(parseFloat(el.exchangeRate[0]) * 100000) /
+                    100000;
                   rs.inverse_rate_obj[el.targetCurrency[0]] =
-                    Math.round(parseFloat(el.inverseRate[0]) * 100) / 100;
+                    Math.round(parseFloat(el.inverseRate[0]) * 100000) / 100000;
                 });
                 next(null, rs);
               }
@@ -78,7 +75,6 @@ module.exports = {
             param.init = {};
             param.init.exc_USD = result.exchange_rate_obj.USD;
             param.init.inv_USD = result.inverse_rate_obj.USD;
-            param.init.con_USD = Math.round(result.inverse_rate_obj.USD * 100);
 
             return res.render('index', { param });
           }
@@ -88,67 +84,44 @@ module.exports = {
       return res.send('getCurrencyData catch in ' + e.toString());
     }
   },
-  /*
   convertCurrency: (req, res) => {
     try {
-      // 取得傳入資料
-      const { amount, currency, submit } = req.body;
+      const { amount, currency_from, currency_to, submit } = req.body;
       let error_msg = '';
       // 資料非從指定頁面傳入
-      if (submit != 'CONVERT') {
-        error_msg = 'Please visit Exange Rate page.';
+      if (submit != 'Convert') {
+        let url = '/localhost:3000';
+        error_msg = 'Please visit Currency Convert page: ' + url + '.';
         return res.send(error_msg);
       }
       // 資料不齊全
-      else if (amount == '' || currency == '') {
+      else if (amount == '' || currency_from == '' || currency_to == '') {
         error_msg = 'Please input amount and currency.';
         return alert(error_msg);
       }
-      // 取得當前匯率並轉換
+      // 返回狀態給前端
       else {
-        let rs = {};
-        async.waterfall(
-          [
-            // 取得匯率資料
-            (next) => {
-              axios
-                .get('http://www.floatrates.com/daily/twd.xml')
-                .then((data) => {
-                  if (data.status === 200) {
-                    rs.data = data.data;
-                  } else {
-                    rs.error_msg =
-                      'Get currency error, status code: ' + data.status;
-                  }
-                  next(null, rs);
-                })
-                .catch((e) => {
-                  rs.error_msg = e.message;
-                  next(rs);
-                });
-            },
-            // 轉換匯率
-            (rs, next) => {
-              parser.parseString(rs.data, (err, rst) => {
-                if (err) {
-                  rs.error_msg = err.toString();
-                  next(rs);
-                } else {
-                }
-              });
-            },
-          ],
-          function (error, result) {
-            if (error) {
-              return res.send(error.error_msg);
-            } else {
-            }
-          }
-        );
+        return res.json(200);
       }
     } catch (e) {
       return res.send('convertCurrency catch in ' + e.toString());
     }
   },
-  */
+  getExchangeRate: (callback) => {
+    let error_msg = '';
+    axios
+      .get('http://www.floatrates.com/daily/twd.xml')
+      .then((data) => {
+        if (data.status === 200) {
+          callback(null, data.data);
+        } else {
+          error_msg = 'Get currency error, status code: ' + data.status;
+          callback(error_msg);
+        }
+      })
+      .catch((e) => {
+        error_msg = e.message;
+        callback(error_msg);
+      });
+  },
 };
