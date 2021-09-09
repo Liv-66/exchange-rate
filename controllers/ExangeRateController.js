@@ -2,6 +2,7 @@ const axios = require('axios');
 const xml2js = require('xml2js');
 const async = require('async');
 const alert = require('alert');
+const moment = require('moment');
 
 parser = new xml2js.Parser();
 
@@ -40,8 +41,7 @@ module.exports = {
                 rs.currency_target = [];
                 rs.exchange_rate_obj = {};
                 rs.inverse_rate_obj = {};
-                rs.updated_time = rst.channel.lastBuildDate;
-                rs.description = rst.channel.description;
+                rs.updated_time = moment(rst.channel.lastBuildDate[0]).format('YYYY-MM-DD hh:mm:ss');
 
                 // 當前貨幣 - TWD
                 rs.currency_base =
@@ -69,8 +69,6 @@ module.exports = {
             return res.send(error.error_msg);
           } else {
             param.updated_time = result.updated_time;
-            param.description = result.description;
-
             param.currency_base = result.currency_base;
             param.currency_target = result.currency_target;
             param.inverse_rate_str = JSON.stringify(result.inverse_rate_obj);
