@@ -9,11 +9,36 @@
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
 </head>
 
-<body style="font-family: sans-serif;" class="bg-light">
-    <h1 class="m-4">Exchange Rate</h1>
+<header class="pl-5"
+    style="border-bottom: 1px solid rgba(255, 255, 255, 0.2); background-color:rgba(255, 255, 255, 0.2)">
+    <div style="max-width: 1070px; margin: 0 auto;">
+        <h2 class="pt-4 pb-3" style="color: rgb(37,169,193); ">Currency Converter</h2>
+    </div>
+</header>
+
+<body
+    style="font-family: sans-serif; background-image: linear-gradient(to bottom, rgba(255,255,255,0.4) 100%,rgba(0,0,0,0.3) 100%), url('background.jpg'); background-size: cover;">
     <div class="m-5">
         {{{body}}}
     </div>
+    <footer class="bg-dark text-center text-white" style="position: absolute; bottom: 0; width: 100%">
+        <div class="container p-4 pb-0">
+            XML Daily foreign exchange rates for New Taiwan Dollar (TWD) from
+            <a href="http://www.floatrates.com/daily/twd.xml" style="color: #fff; text-decoration: underline;">Float
+                Rates</a>.
+        </div>
+        <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+            © 2021 Copyright: Liv Huang
+            <section style="display: inline;">
+                <a class="btn btn-outline-light btn-floating m-1" href="https://medium.com/@liv-66" role="button"
+                    style="width: 70px; font-size: 12px;">Medium</a>
+                <a class="btn btn-outline-light btn-floating m-1" href="https://github.com/Liv-66" role="button"
+                    style="width: 70px; font-size: 12px;">GitHub</i></a>
+                <a class="btn btn-outline-light btn-floating m-1" href="https://www.linkedin.com/in/liv-66/"
+                    role="button" style="width: 70px; font-size: 12px;">LinkedIn</i></a>
+            </section>
+        </div>
+    </footer>
 </body>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

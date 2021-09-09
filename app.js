@@ -21,6 +21,7 @@ app.use(
     extended: true,
   })
 );
+app.use(express.static(__dirname + '/public'));
 
 app.get('/', ExangeRateController.getCurrencyData);
 // app.post('/', ExangeRateController.convertCurrency);

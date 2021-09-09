@@ -40,8 +40,8 @@ module.exports = {
                 rs.currency_target = [];
                 rs.exchange_rate_obj = {};
                 rs.inverse_rate_obj = {};
-                // rs.updated_time = rst.channel.lastBuildDate;
-                // rs.description = rst.channel.description;
+                rs.updated_time = rst.channel.lastBuildDate;
+                rs.description = rst.channel.description;
 
                 // 當前貨幣 - TWD
                 rs.currency_base =
@@ -68,8 +68,8 @@ module.exports = {
           if (error) {
             return res.send(error.error_msg);
           } else {
-            // param.updated_time = result.updated_time;
-            // param.description = result.description;
+            param.updated_time = result.updated_time;
+            param.description = result.description;
 
             param.currency_base = result.currency_base;
             param.currency_target = result.currency_target;

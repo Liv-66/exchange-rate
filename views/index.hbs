@@ -1,63 +1,80 @@
-<div class="d-inline-block" style="background-color: #eee; width: 40%">
+<div style="max-width: 1024px; margin: 0 auto;">
+  <div class="d-inline-block shadow p-3 mb-5 bg-white rounded" style="width: 40%">
 
-  <form action="/" method="post" style="background-color: #fff" class="pt-4 pb-4 pl-5 pr-5 position-relative"
-    onkeydown="return event.key != 'Enter';">
-    <label for="amount" class="d-block">Amount</label>
-    <input type="text" name="amount" id="amount" class="form-control d-block" style="width: 100%;" value="100"
-      onKeyUp="value=value.replace(/[^\d\.]/g,'')">
-    <label for="from" class="d-block mt-4">From</label>
-    <select name="currency" id="from" style="width: 100%;" class="form-control">
-      {{#each param.currency_target}}
-      <option>{{this}}</option>
-      {{/each}}
-    </select>
-    <div id="switch" class="btn position-absolute"
-      style="right: 3em; top: 12.3em; color: #808080; border-color: #CDCDCD">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up"
-        viewBox="0 0 16 16">
-        <path fill-rule="evenodd"
-          d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z" />
-      </svg>
-    </div>
-    <label for="to" class="d-block mt-4">To</label>
-    <select name="currency" id="to" style="width: 100%;" class="form-control">
-      <option>{{param.currency_base}}</option>
-    </select>
-
-    {{!-- <input type="submit" name="submit" class="btn btn-info mt-5" style="width: 100%;" value="Convert"> --}}
-
-    <div style="display: block;" class="pt-4">
-      About <span id="convert_amount" style="font-size:1.5rem">{{param.init.con_USD}}</span> <span
-        id="convert_currency">TWD</span>
-    </div>
-    <div style="display: block; color: #777" id="convert_description">
-      1 USD = {{param.init.inv_USD}} TWD
-    </div>
-  </form>
-
-</div>
-
-<div class="d-inline-block float-right" style="background-color: #eee; width: 55%">
-  <div class="card-deck p-3">
-    <div class="card" style="width: 18rem;">
-      <div class="card-header font-weight-bold" id="exchange_title">
-        USD to TWD
+    <form action="/" method="post" style="background-color: #fff" class="p-4 position-relative"
+      onkeydown="return event.key != 'Enter';">
+      <label for="amount" class="d-block">Amount</label>
+      <input type="text" name="amount" id="amount" class="form-control d-block" style="width: 100%;" value="100"
+        onKeyUp="value=value.replace(/[^\d\.]/g,'')">
+      <label for="from" class="d-block mt-4">From</label>
+      <select name="currency" id="from" style="width: 100%;" class="form-control">
+        {{#each param.currency_target}}
+        <option>{{this}}</option>
+        {{/each}}
+      </select>
+      <div id="switch" class="btn position-absolute"
+        style="right: 1.6em; top: 12.3em; color: #808080; border-color: #CDCDCD">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-up"
+          viewBox="0 0 16 16" style="color: #28a2b8">
+          <path fill-rule=" evenodd"
+            d="M11.5 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L11 2.707V14.5a.5.5 0 0 0 .5.5zm-7-14a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L4 13.293V1.5a.5.5 0 0 1 .5-.5z" />
+        </svg>
       </div>
-      <ul class="list-group list-group-flush" id="exchange_list">
-        <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
-      </ul>
-    </div>
-    <div class="card" style="width: 18rem;">
-      <div class="card-header font-weight-bold" id="inverse_title">
-        TWD to USD
+      <label for="to" class="d-block mt-4">To</label>
+      <select name="currency" id="to" style="width: 100%;" class="form-control">
+        <option>{{param.currency_base}}</option>
+      </select>
+
+      <input type="submit" name="submit" class="btn btn-info mt-5" style="width: 100%;" value="Convert">
+
+      <div style="display: none;" class="pt-4">
+        About <span id="convert_amount" style="font-size:1.5rem; color: #28a2b8">{{param.init.con_USD}}</span> <span
+          id="convert_currency">TWD</span>
       </div>
-      <ul class="list-group list-group-flush" id="inverse_list">
-        <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
-      </ul>
+      <div style="display: none; color: #777; font-size: .9em" id="convert_description">
+        1 USD = {{param.init.inv_USD}} TWD
+      </div>
+    </form>
+
+  </div>
+
+  <div class="d-inline-block float-right shadow p-3 mb-5 bg-white rounded" style="width: 55%">
+    <div class="card-deck p-3">
+      <div class="card" style="width: 18rem; ">
+        <div class="card-header font-weight-bold" style="background-color: #28a2b814;" id="exchange_title">
+          USD to TWD
+        </div>
+        <ul class="list-group list-group-flush" id="exchange_list">
+          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
+          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
+          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
+          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
+          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
+          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
+          <li class="list-group-item">1 USD = {{param.init.inv_USD}} TWD</li>
+
+        </ul>
+      </div>
+      <div class="card" style="width: 18rem;">
+        <div class="card-header font-weight-bold" style="background-color: #28a2b814;" id="inverse_title">
+          TWD to USD
+        </div>
+        <ul class="list-group list-group-flush" id="inverse_list">
+          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+          <li class="list-group-item">1 TWD = {{param.init.exc_USD}} USD</li>
+        </ul>
+      </div>
+    </div>
+    <div style="float: right; margin-right: 1.2em; color: #777; font-size: .9em;">
+      Updated: {{param.updated_time}}
     </div>
   </div>
 </div>
-
 <script>
   const inverse = {{{ param.inverse_rate_str }}};
   const exchange = {{{ param.exchange_rate_str }}};
