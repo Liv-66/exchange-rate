@@ -183,4 +183,8 @@ module.exports = {
     );
     return result;
   },
+  convertTest: (req, res) => {
+    let result = Math.round(req.body.amount * req.body.rate);
+    return res.send(200, result);
+  },
 };
