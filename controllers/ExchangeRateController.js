@@ -218,7 +218,7 @@ module.exports = {
     {
       return false;
     }
-    return from +',"' + input + '", =,' + to + ',"' + output + '"\n';
+    return from +', "' + input + '", =, ' + to + ', "' + output + '"\n';
   },
   csvWriter: (csv_data, cb) => {
     let writeStream = fs.createWriteStream('public/csv/data.csv', {encoding: 'utf8'});

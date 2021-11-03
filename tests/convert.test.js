@@ -24,7 +24,7 @@ describe('# TEST', function () {
   context('# [非指定介面進入]', () => {
     it(' Please visit Currency Convert page ', (done) => {
       request(app)
-        .post('/convert')
+        .post('/api/v1/currencies')
         .end(function (err, res) {
           res.text.should.include('Please visit Currency Convert page');
           done();
@@ -35,7 +35,7 @@ describe('# TEST', function () {
   context('# [輸入資料正確]', () => {
     it(' Please visit Currency Convert page ', (done) => {
       request(app)
-        .post('/convert')
+        .post('/api/v1/currencies')
         .send({
           submit: 'Convert',
           amount: 100,
@@ -52,7 +52,7 @@ describe('# TEST', function () {
   context('# 轉換USD ', () => {
     it(' [USD 11,222.02, Rate = 32.23] ', (done) => {
       request(app)
-        .post('/convert/test')
+        .post('/api/v1/test')
         .send({
           amount: 11222.02,
           rate: 32.23,
@@ -67,7 +67,7 @@ describe('# TEST', function () {
   context('# 轉換JPY ', () => {
     it(' [JPY 31,999, Rate = 0.35] ', (done) => {
       request(app)
-        .post('/convert/test')
+        .post('/api/v1/test')
         .send({
           amount: 31999,
           rate: 0.35,
