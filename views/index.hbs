@@ -223,6 +223,34 @@
     convert();
   })
 
+  // 儲存當筆資料
+  document.getElementById('save').addEventListener('click', function () {
+    const dataObj = {
+      input: $('#amount').val(),
+      from: $('#from').val(),
+      to: $('#to').val(),
+      output: $('#convert_amount').text()
+    }
+
+    $.ajax({
+      url: '/api/v1/currencies/saving',
+      type: 'POST',
+      data: dataObj,
+      error: (error) => { console.log('error: ', error) },
+      success: (res) => {
+        if (res === 200) {
+          $('#submit').hide();
+          $('#save').show();
+          $('#convert_amount_box').show();
+          $('#convert_description').show();
+
+          dashboard();
+          convert();
+        }
+      }
+    })
+  })
+
   function convert() {
     let amount = document.getElementById('amount').value;
     // 確認input為數字且只有一個小數點

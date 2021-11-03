@@ -187,4 +187,13 @@ module.exports = {
     let result = Math.round(req.body.amount * req.body.rate);
     return res.send(200, result);
   },
+  saveCurrency: (req, res) => {
+    try {
+      const { input, from, to, output } = req.body;
+      let error_msg = '';
+      console.log('saveCurrency')
+    } catch (e) {
+      return res.send('convertCurrency catch in ' + e.toString());
+    }
+  },
 };
