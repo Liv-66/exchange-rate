@@ -5,7 +5,9 @@ const alert = require('alert');
 const moment = require('moment');
 const fs = require('fs');
 
-let savingObj = {};
+let savingObj = {
+  someone: 'test',
+};
 
 parser = new xml2js.Parser();
 
@@ -193,12 +195,21 @@ module.exports = {
   saveCurrency: (req, res) => {
     try {
       const { input, output, from, to } = req.body;
-      console.log('output: ', output)
-		  let writeStream = fs.createWriteStream('public/csv/data.csv', {encoding: 'utf8'});
+      console.log('output: ', output);
+      let writeStream = fs.createWriteStream('public/csv/data.csv', {
+        encoding: 'utf8',
+      });
       let error_msg = '';
       let csv_data = '';
     } catch (e) {
       return res.send('saveCurrency catch in ' + e.toString());
+    }
+  },
+  checkDataExist: (name) => {
+    try {
+      return savingObj[name] ? true : false;
+    } catch (e) {
+      return res.send('checkDataExist catch in ' + e.toString());
     }
   },
 };
