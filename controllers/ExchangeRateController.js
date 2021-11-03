@@ -195,9 +195,13 @@ module.exports = {
       const { input, output, from, to } = req.body;
 		  
       let error_msg = '';
-      let csv_data = module.exports.verifyData(from, input, to, output);
-      console.log('csv_data: ', csv_data);
-      module.exports.csvWriter(csv_data, (err) => {
+      if (!savingObj['someone'])
+      {
+        savingObj['someone'] = '';
+      }
+      savingObj['someone'] += module.exports.verifyData(from, input, to, output);
+      console.log('someone: ', savingObj['someone']);
+      module.exports.csvWriter(savingObj['someone'], (err) => {
         if (err)
         {
           console.log(err);
@@ -218,7 +222,7 @@ module.exports = {
     {
       return false;
     }
-    return from +', "' + input + '", =, ' + to + ', "' + output + '"\n';
+    return `${from},"${input}",=,${to},"${output}"\n`;
   },
   csvWriter: (csv_data, cb) => {
     let writeStream = fs.createWriteStream('public/csv/data.csv', {encoding: 'utf8'});

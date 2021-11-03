@@ -16,7 +16,7 @@ describe(" TEST saving function", function() {
   
   it("check if result of funtion verifyData() is expected", function(){
       var result = ExchangeRateController.verifyData('EUR', '100', 'TWD', '3,231');
-      var expected = 'EUR, "100", =, TWD, "3,231"\n';
+      var expected = 'EUR,"100",=,TWD,"3,231"\n';
       assert.deepEqual( result, expected)
   })
 
