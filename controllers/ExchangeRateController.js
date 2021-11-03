@@ -3,6 +3,9 @@ const xml2js = require('xml2js');
 const async = require('async');
 const alert = require('alert');
 const moment = require('moment');
+const fs = require('fs');
+
+let savingObj = {};
 
 parser = new xml2js.Parser();
 
@@ -189,11 +192,13 @@ module.exports = {
   },
   saveCurrency: (req, res) => {
     try {
-      const { input, from, to, output } = req.body;
+      const { input, output, from, to } = req.body;
+      console.log('output: ', output)
+		  let writeStream = fs.createWriteStream('public/csv/data.csv', {encoding: 'utf8'});
       let error_msg = '';
-      console.log('saveCurrency')
+      let csv_data = '';
     } catch (e) {
-      return res.send('convertCurrency catch in ' + e.toString());
+      return res.send('saveCurrency catch in ' + e.toString());
     }
   },
 };
