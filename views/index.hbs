@@ -227,8 +227,8 @@
   document.getElementById('save').addEventListener('click', function () {
     const dataObj = {
       input: $('#amount').val(),
-      from: $('#from').val(),
-      to: $('#to').val(),
+      from: $('#from').val().split('-')[0],
+      to: $('#to').val().split('-')[0],
       output: $('#convert_amount').text()
     }
 

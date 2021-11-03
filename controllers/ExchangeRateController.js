@@ -193,12 +193,42 @@ module.exports = {
   saveCurrency: (req, res) => {
     try {
       const { input, output, from, to } = req.body;
-      console.log('output: ', output)
-		  let writeStream = fs.createWriteStream('public/csv/data.csv', {encoding: 'utf8'});
+		  
       let error_msg = '';
-      let csv_data = '';
+      let csv_data = module.exports.verifyData(from, input, to, output);
+      console.log('csv_data: ', csv_data);
+      module.exports.csvWriter(csv_data, (err) => {
+        if (err)
+        {
+          console.log(err);
+        }
+        else
+        {
+          console.log('finish write stream, moving along');
+        }
+      });
+
+
     } catch (e) {
       return res.send('saveCurrency catch in ' + e.toString());
     }
+  },
+  verifyData: (from, input, to, output) => {
+    if (!from || !input || !to || !output)
+    {
+      return false;
+    }
+    return from +',"' + input + '", =,' + to + ',"' + output + '"\n';
+  },
+  csvWriter: (csv_data, cb) => {
+    let writeStream = fs.createWriteStream('public/csv/data.csv', {encoding: 'utf8'});
+    writeStream.write(csv_data, () => {})
+
+    writeStream.end();
+    writeStream.on('finish', () => {
+      return cb(null);
+    }).on('error', (err) => {
+      return cb(err);
+    })
   },
 };
