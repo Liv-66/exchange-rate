@@ -202,6 +202,14 @@ module.exports = {
 
       module.exports.saveData('someone', singleData);
 
+    } catch (e) {
+      return res.send('saveCurrency catch in ' + e.toString());
+    }
+  },
+  downloadCurrency: (req, res) => {
+    try {
+      // const { } = req.body;
+
       module.exports.csvWriter(savingObj['someone'], (err) => {
         if (err)
         {
@@ -213,9 +221,8 @@ module.exports = {
         }
       });
 
-
     } catch (e) {
-      return res.send('saveCurrency catch in ' + e.toString());
+      return res.send('downloadCurrency catch in ' + e.toString());
     }
   },
   verifyData: (from, input, to, output) => {

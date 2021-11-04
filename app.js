@@ -26,6 +26,7 @@ app.use(express.static(__dirname + '/public'));
 app.get('/', ExchangeRateController.getCurrencyData);
 app.post('/api/v1/currencies', ExchangeRateController.convertCurrency);
 app.post('/api/v1/currencies/saving', ExchangeRateController.saveCurrency);
+app.post('/api/v1/currencies/download', ExchangeRateController.downloadCurrency);
 app.post('/api/v1/test', ExchangeRateController.convertTest);
 
 app.listen(port, () => {
