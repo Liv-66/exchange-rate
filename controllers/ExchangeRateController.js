@@ -195,14 +195,13 @@ module.exports = {
   saveCurrency: (req, res) => {
     try {
       const { input, output, from, to } = req.body;
-		  
-      let error_msg = '';
-      if (!savingObj['someone'])
-      {
-        savingObj['someone'] = '';
-      }
-      savingObj['someone'] += module.exports.verifyData(from, input, to, output);
-      console.log('someone: ', savingObj['someone']);
+
+      module.exports.createData('someone');
+
+      let singleData =  module.exports.verifyData(from, input, to, output);
+
+      module.exports.saveData('someone', singleData);
+
       module.exports.csvWriter(savingObj['someone'], (err) => {
         if (err)
         {
@@ -237,9 +236,26 @@ module.exports = {
       return cb(err);
     })
   },
-  checkDataExist: (name) => {
+  createData: (randomId) => {
     try {
-      return savingObj[name] ? true : false;
+      if (!savingObj[randomId])
+      {
+        savingObj[randomId] = '';
+      }
+    } catch (e) {
+      return res.send('createData catch in ' + e.toString());
+    }
+  },
+  saveData: (randomId, data) => {
+    try {
+      savingObj[randomId] += data;
+    } catch (e) {
+      return res.send('createData catch in ' + e.toString());
+    }
+  },
+  checkDataExist: (randomId) => {
+    try {
+      return savingObj[randomId.toString()] ? true : false;
     } catch (e) {
       return res.send('checkDataExist catch in ' + e.toString());
     }

@@ -6,10 +6,8 @@ const ExchangeRateController = require('../controllers/ExchangeRateController');
 const assert = chai.assert;
 
 const app = require('../app');
-const ExchangeRateController = require('../controllers/ExchangeRateController.js');
-var assert = chai.assert;
 
-describe(" TEST saving function", function() {
+describe("# TEST verify function", function() {
   
   it("check if function verifyData() return false", function(){
       var result = ExchangeRateController.verifyData('test', 'wrong', 'input');
@@ -24,14 +22,20 @@ describe(" TEST saving function", function() {
 
 })
 
-describe.only('# TEST saving function', function () {
-  it('check data exist', () => {
-    assert.isTrue(ExchangeRateController.checkDataExist('someone'));
-  });
-
+describe('# TEST saving function', function () {
+  
   it('check data DO NOT exist', () => {
-    assert.isFalse(ExchangeRateController.checkDataExist('nobody'));
+    const randomId = Math.floor(Math.random() * (1000 - 1) ) + 1;
+    assert.isFalse(ExchangeRateController.checkDataExist(randomId));
   });
+  
+  it('check data exist', () => {
+    const randomId = Math.floor(Math.random() * (1000 - 1) ) + 1;
+    ExchangeRateController.createData(randomId);
+    ExchangeRateController.saveData(randomId, 'EUR,"100",=,TWD,"3,231"\n');
+    assert.isTrue(ExchangeRateController.checkDataExist(randomId));
+  });
+  
 });
 
 describe('# TEST', function () {
