@@ -5,7 +5,9 @@ const alert = require('alert');
 const moment = require('moment');
 const fs = require('fs');
 
-let savingObj = {};
+let savingObj = {
+  someone: 'test',
+};
 
 parser = new xml2js.Parser();
 
@@ -234,5 +236,12 @@ module.exports = {
     }).on('error', (err) => {
       return cb(err);
     })
+  },
+  checkDataExist: (name) => {
+    try {
+      return savingObj[name] ? true : false;
+    } catch (e) {
+      return res.send('checkDataExist catch in ' + e.toString());
+    }
   },
 };

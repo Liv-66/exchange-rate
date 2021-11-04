@@ -2,6 +2,8 @@ const chai = require('chai');
 const request = require('supertest');
 const sinon = require('sinon');
 const should = chai.should();
+const ExchangeRateController = require('../controllers/ExchangeRateController');
+const assert = chai.assert;
 
 const app = require('../app');
 const ExchangeRateController = require('../controllers/ExchangeRateController.js');
@@ -21,6 +23,16 @@ describe(" TEST saving function", function() {
   })
 
 })
+
+describe.only('# TEST saving function', function () {
+  it('check data exist', () => {
+    assert.isTrue(ExchangeRateController.checkDataExist('someone'));
+  });
+
+  it('check data DO NOT exist', () => {
+    assert.isFalse(ExchangeRateController.checkDataExist('nobody'));
+  });
+});
 
 describe('# TEST', function () {
   context('# [取得匯率]', () => {
